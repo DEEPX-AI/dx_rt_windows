@@ -8,9 +8,9 @@ This repository contains the official distribution of the DeepX Windows Runtime 
 
 The repository is organized as follows:
 
-* **`installers/`**: Contains the Windows installer executable for the NPU driver.
-* **`prebuilt/`**: Contains precompiled runtime libraries, headers, and tools.
-* **`docs/`**: Detailed installation guides and manuals.
+* **`m1/v.3.1.1/dxm1drv/`**: Contains the Windows installer executable for the DX-M1 NPU driver.
+* **`m1/v.3.1.1/dx_rt/`**: Contains precompiled runtime libraries, headers, and tools.
+* **`docs/v.3.1.1/`**: Detailed installation guides and manuals.
 
 ## 🚀 Supported Devices
 
@@ -27,22 +27,22 @@ Before installing, ensure your system meets the following requirements:
 
 ## 📦 Installation
 
-For detailed step-by-step instructions, please refer to the [**Installation Guide**](docs/v3.1.0/Installation_on_Windows.md).
+For detailed step-by-step instructions, please refer to the [**Installation Guide**](docs/v.3.1.1/Installation_on_Windows.md).
 
 ### 1. Driver Installation
-The driver installer is located in the `installers` directory.
+The driver installer is located in the `m1/v.3.1.1/dxm1drv/` directory.
 
-1.  Navigate to `installers/v.3.1.0/`.
-2.  Run the **`dx_rt_windows_driver_v1.8.0_x86_64.exe`** file.
+1.  Navigate to `m1/v.3.1.1/dxm1drv/`.
+2.  Run the driver installer executable file.
 3.  Follow the on-screen instructions to complete the installation.
 4.  **Reboot** your system if prompted.
 
 ### 2. Runtime Environment Setup
 The runtime libraries are required to run applications using the DeepX NPU.
 
-1.  Navigate to `prebuilt/v3.1.0/`.
-2.  Extract **`dx_rt_windows_prebuilt_v3.1.0_x86_64.zip`** to your desired location (e.g., `C:\DeepX\Runtime`).
-3.  Add the `bin` folder path from the extracted directory to your system's **PATH** environment variable.
+1.  Navigate to `m1/v.3.1.1/dx_rt/`.
+2.  Copy the runtime files to your desired location (e.g., `C:\DeepX\Runtime`).
+3.  Add the folder path to your system's **PATH** environment variable.
 
 ## ✅ Verification
 
@@ -54,7 +54,7 @@ After installation, you can verify the setup by checking the Windows Device Mana
 
 ## 📖 Documentation
 
-* [Installation on Windows](docs/v3.1.0/Installation_on_Windows.md): Comprehensive guide for driver and runtime installation.
+* [Installation on Windows](docs/v.3.1.1/Installation_on_Windows.md): Comprehensive guide for driver and runtime installation.
 
 ## 🤝 Contributing
 
