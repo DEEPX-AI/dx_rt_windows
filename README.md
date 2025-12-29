@@ -10,7 +10,8 @@ This repository provides **prebuilt binaries** for DeepX NPU devices on Windows,
 dx_rt_windows/
 ├── m1/v.3.1.1/
 │   ├── dxm1drv/           # PCIe driver files (INF, SYS, CAT)
-│   └── dx_rt/             # Runtime libraries and tools
+│   ├── dx_rt/             # Runtime libraries and tools
+│   └── dx_app/            # Demo applications and examples
 └── docs/v.3.1.1/
     └── Installation_on_Windows.md
 ```
@@ -60,9 +61,36 @@ dxrt-cli.exe -s
 
 If device information appears, installation is complete.
 
+### 4. Run Demo Applications (Optional)
+
+The SDK includes pre-built demo applications for object detection, classification, and pose estimation.
+
+**Download Models and Videos:**
+```cmd
+cd m1\v.3.1.1\dx_app
+setup.bat
+```
+
+This downloads DXNN models and sample videos to `assets/` directory.
+
+**Run a Demo:**
+```cmd
+cd scripts\x86_64_win
+run_detector.bat
+```
+
+Available demos:
+- `run_detector.bat` - Object detection (YOLOv5, YOLOv7, YOLOv8, etc.)
+- `run_classifier.bat` - Image classification
+- `run_yolo.bat` - YOLO inference
+- `run_yolo_pose.bat` - Pose estimation
+- `run_yolo_multi.bat` - Multi-model demo
+
+See the [installation guide](docs/v.3.1.1/Installation_on_Windows.md#4-demo-applications-setup-optional) for detailed instructions.
+
 ## 🛠️ Available Tools
 
-Located in `m1/v.3.1.1/dx_rt/`:
+### Runtime Tools (`m1/v.3.1.1/dx_rt/`)
 
 | Tool | Description |
 |------|-------------|
@@ -72,6 +100,19 @@ Located in `m1/v.3.1.1/dx_rt/`:
 | **parse_model.exe** | Inspect model information |
 | **dxbenchmark.exe** | Performance benchmarking |
 | **dxtop.exe** | Real-time NPU monitoring |
+
+### Demo Applications (`m1/v.3.1.1/dx_app/`)
+
+| Script | Description |
+|--------|-------------|
+| **setup.bat** | Download models and sample videos |
+| **run_detector.bat** | Object detection demo (YOLOv5/v7/v8/v9, YOLOX) |
+| **run_classifier.bat** | Image classification demo (ImageNet) |
+| **run_yolo.bat** | Basic YOLO inference |
+| **run_yolo_pose.bat** | Pose estimation with YOLOv5Pose |
+| **run_yolo_multi.bat** | Multi-model YOLO demo |
+| **run_ppu_yolo_multi.bat** | PPU-optimized multi-YOLO |
+| **od_segmentation.bat** | Object detection & segmentation |
 
 Run any tool with `-h` for detailed usage.
 

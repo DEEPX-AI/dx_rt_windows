@@ -196,7 +196,84 @@ sc delete DxrtService
 
 ---
 
-## 4. Verification
+## 4. Demo Applications Setup (Optional)
+
+The DeepX SDK includes pre-built demo applications that demonstrate NPU capabilities with object detection, classification, and pose estimation.
+
+### Step 1: Download Models and Sample Videos
+
+Before running demo applications, you need to download the required DXNN models and sample video files.
+
+1. Navigate to the `m1/v.3.1.1/dx_app/` directory:
+   ```cmd
+   cd path\to\m1\v.3.1.1\dx_app
+   ```
+
+2. Run the setup script:
+   ```cmd
+   setup.bat
+   ```
+
+   This script will:
+   - Download pre-trained DXNN models (models-2_1_0.tar.gz) from DeepX SDK repository
+   - Download sample video files (sample_videos.tar.gz) for testing
+   - Extract them to `assets/models/` and `assets/videos/` directories
+   - Clean up temporary archive files
+
+**Note:** The download may take several minutes depending on your internet connection. If the directories already exist, the script will skip downloading.
+
+### Step 2: Run Demo Applications
+
+The demo applications are located in `m1/v.3.1.1/dx_app/scripts/x86_64_win/`. Each script runs a specific type of demo:
+
+#### Available Demos:
+
+| Script | Description | Example Model |
+|--------|-------------|---------------|
+| **run_detector.bat** | Object detection demo | YOLOv5, YOLOv7, YOLOv8, YOLOv9, YOLOX |
+| **run_classifier.bat** | Image classification demo | ImageNet classifiers |
+| **run_yolo.bat** | YOLO model inference | YOLOv7, YOLOv5S |
+| **run_yolo_pose.bat** | Pose estimation demo | YOLOv5Pose |
+| **run_yolo_multi.bat** | Multi-model YOLO demo | Multiple YOLO models |
+| **run_ppu_yolo_multi.bat** | PPU-optimized multi-YOLO | YOLO with post-processing |
+| **od_segmentation.bat** | Object detection & segmentation | Combined detection models |
+
+#### Running a Demo:
+
+1. Navigate to the scripts directory:
+   ```cmd
+   cd m1\v.3.1.1\dx_app\scripts\x86_64_win
+   ```
+
+2. Run any demo script by double-clicking it or executing from command line:
+   ```cmd
+   run_detector.bat
+   ```
+   or
+   ```cmd
+   run_yolo.bat
+   ```
+
+3. A new command window will open showing the inference results in real-time.
+
+**Note:** Ensure that `dxrtd.exe` is running before executing any demo application.
+
+### Step 3: Customizing Demos
+
+Each demo uses configuration JSON files located in the `example/` directory. You can modify these configurations to:
+- Change input video sources
+- Adjust model parameters
+- Modify post-processing settings
+- Configure output options
+
+Example configuration files:
+- `example/run_detector/yolov5s3_example.json`
+- `example/run_classifier/imagenet_example.json`
+- `example/yolo_multi/yolo_multi_demo.json`
+
+---
+
+## 5. Verification
 
 To ensure everything is set up correctly, follow these verification steps:
 
