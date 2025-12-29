@@ -2,65 +2,114 @@
 
 **Windows runtime libraries, drivers, and installation documentation for DEEPX AI accelerators.**
 
-This repository contains the official distribution of the DeepX Windows Runtime (DX-RT) and Kernel Drivers. Unlike the source repository, this repository provides **prebuilt binaries and installers** intended for end-users and developers who need to set up the execution environment for DeepX NPU devices.
+This repository provides **prebuilt binaries** for DeepX NPU devices on Windows, including PCIe device drivers and runtime environment for DX-M1 accelerators.
 
 ## 📂 Repository Structure
 
-The repository is organized as follows:
-
-* **`m1/v.3.1.1/dxm1drv/`**: Contains the Windows installer executable for the DX-M1 NPU driver.
-* **`m1/v.3.1.1/dx_rt/`**: Contains precompiled runtime libraries, headers, and tools.
-* **`docs/v.3.1.1/`**: Detailed installation guides and manuals.
+```
+dx_rt_windows/
+├── m1/v.3.1.1/
+│   ├── dxm1drv/           # PCIe driver files (INF, SYS, CAT)
+│   └── dx_rt/             # Runtime libraries and tools
+└── docs/v.3.1.1/
+    └── Installation_on_Windows.md
+```
 
 ## 🚀 Supported Devices
 
-| Device Type | Model Name | Description |
-| :--- | :--- | :--- |
-| DX_M1 | **DX-M1** | AI Accelerator |
+| Device | Connection | Description |
+|--------|------------|-------------|
+| **DX-M1** | PCIe / M.2 / USB 4.0* | AI Accelerator |
+
+> *USB 4.0 requires PCIe tunneling support (Thunderbolt™ or USB4)
 
 ## 💻 System Requirements
 
-Before installing, ensure your system meets the following requirements:
+* **OS**: Windows 10 or later (x86_64)
+* **Hardware**: DeepX NPU device installed in PCIe slot, M.2 slot, or connected via USB 4.0
+* **Privileges**: Administrator rights required for driver installation
 
-* **Operating System**: Windows 10 or later (x86_64)
-* **Hardware**: DeepX NPU Device (e.g., DX-M1) connected via PCIe.
+## 📦 Quick Start
 
-## 📦 Installation
+### 1. Install Driver
+Navigate to `m1/v.3.1.1/dxm1drv/` and right-click **`dxm1drv.inf`** → Select **Install**
 
-For detailed step-by-step instructions, please refer to the [**Installation Guide**](docs/v.3.1.1/Installation_on_Windows.md).
+Alternative methods available in the [full installation guide](docs/v.3.1.1/Installation_on_Windows.md).
 
-### 1. Driver Installation
-The driver installer is located in the `m1/v.3.1.1/dxm1drv/` directory.
+### 2. Configure Runtime Service
+The `dxrtd.exe` daemon must run for NPU operations:
 
-1.  Navigate to `m1/v.3.1.1/dxm1drv/`.
-2.  Run the driver installer executable file.
-3.  Follow the on-screen instructions to complete the installation.
-4.  **Reboot** your system if prompted.
+**Simple Method** - Add to Startup folder:
+```cmd
+Win + R → shell:startup
+```
+Create shortcut to `dxrtd.exe` and move it to the Startup folder.
 
-### 2. Runtime Environment Setup
-The runtime libraries are required to run applications using the DeepX NPU.
+**Production Method** - Register as Windows Service:
+```cmd
+cd m1\v.3.1.1\dx_rt
+sc create DxrtService binPath= "%CD%\dxrtd.exe" start= auto DisplayName= "DeepX Runtime Service"
+sc start DxrtService
+```
 
-1.  Navigate to `m1/v.3.1.1/dx_rt/`.
-2.  Copy the runtime files to your desired location (e.g., `C:\DeepX\Runtime`).
-3.  Add the folder path to your system's **PATH** environment variable.
+### 3. Verify Installation
+```cmd
+cd m1\v.3.1.1\dx_rt
+dxrt-cli.exe -s
+```
 
-## ✅ Verification
+If device information appears, installation is complete.
 
-After installation, you can verify the setup by checking the Windows Device Manager:
+## 🛠️ Available Tools
 
-1.  Open **Device Manager**.
-2.  Look for the **"DeepX AI Accelerator"** (or similar) entry under "System devices" or a dedicated category.
-3.  Ensure the device status indicates it is working properly.
+Located in `m1/v.3.1.1/dx_rt/`:
+
+| Tool | Description |
+|------|-------------|
+| **dxrtd.exe** | Runtime daemon (must be running) |
+| **dxrt-cli.exe** | Device management and firmware interface |
+| **run_model.exe** | Run inference on `.dxnn` models |
+| **parse_model.exe** | Inspect model information |
+| **dxbenchmark.exe** | Performance benchmarking |
+| **dxtop.exe** | Real-time NPU monitoring |
+
+Run any tool with `-h` for detailed usage.
 
 ## 📖 Documentation
 
-* [Installation on Windows](docs/v.3.1.1/Installation_on_Windows.md): Comprehensive guide for driver and runtime installation.
+* **[Installation Guide](docs/v.3.1.1/Installation_on_Windows.md)** - Complete step-by-step installation instructions
+  - Driver installation (3 methods)
+  - Runtime service configuration (3 methods)
+  - Verification and troubleshooting
+
+## ✅ Verification Checklist
+
+- [ ] Driver installed (Device Manager shows "DeepX AI Accelerator")
+- [ ] `dxrtd.exe` is running (check Task Manager)
+- [ ] `dxrt-cli.exe -s` shows device information
+- [ ] No errors in Device Manager
+
+## 🐛 Troubleshooting
+
+**Device not detected?**
+- Verify proper PCIe/M.2 slot installation
+- Check Device Manager for warnings
+- Try reinstalling driver
+
+**dxrtd.exe not running?**
+- Run manually from `dx_rt` folder
+- Check Windows Firewall/antivirus
+- Run as Administrator
+
+See [full troubleshooting guide](docs/v.3.1.1/Installation_on_Windows.md#troubleshooting) for more details.
 
 ## 🤝 Contributing
 
-**Note:** This repository hosts binary releases only.
-This software is proprietary. Pull requests modifying the binaries will not be accepted. If you find an issue with the driver or runtime, please submit an issue ticket describing the problem and your environment.
+This repository hosts binary releases only. For issues, please submit a ticket with:
+- Windows version
+- Device model and connection type
+- Error messages or logs
 
 ## 📄 License
 
-See the [LICENSE.md](LICENSE.md) file for details regarding the usage and distribution of the files in this repository.
+See [LICENSE](LICENSE) for usage terms and distribution rights.

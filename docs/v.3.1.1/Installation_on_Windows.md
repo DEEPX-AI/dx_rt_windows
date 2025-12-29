@@ -4,43 +4,64 @@ This document provides step-by-step instructions for installing the DeepX NPU dr
 
 ## 1. Prerequisite
 * **OS:** Windows 10 or later (x86_64)
-* **Hardware:** DEEPX NPU Device (e.g., DX-M1)
+* **Hardware:** DEEPX NPU Device (e.g., DX-M1) connected via:
+  - PCIe slot
+  - M.2 slot
+  - USB 4.0 (requires USB4 PCIe tunneling support)
 * **Administrator Privileges:** Required for driver installation.
 
 ---
 
 ## 2. Driver Installation
 
-The driver installer simplifies the process of setting up the DX-M1 device. 
+The driver package contains the necessary PCIe device driver files for manual installation on Windows.
 
 ### Step 1: Connect the Device
-Ensure your DeepX NPU device is properly connected to your system.
+Ensure your DeepX NPU device is properly connected to your system:
+* For PCIe or M.2 connection: Install the device in an available PCIe slot or M.2 slot
+* For USB connection: Connect via a USB 4.0 port that supports PCIe tunneling (Thunderbolt™ or USB4)
+  - Note: Standard USB 3.x ports are not supported. USB4 PCIe tunneling capability is required.
 
-### Step 2: Run the Installer
-Locate and run the installer executable:
-> **File:** `m1/v.3.1.1/dxm1drv/` directory
+### Step 2: Locate Driver Files
+The driver files are located in:
+> **Directory:** `m1/v.3.1.1/dxm1drv/`
 
-### Step 3: Check Device Status
+The directory contains the following files:
+* `dxm1drv.inf` - Driver information file
+* `dxm1drv.sys` - Driver binary
+* `dxm1drv.cat` - Catalog file for driver signature
 
-The installer will automatically detect the device status.
+### Step 3: Install the Driver
 
-#### Scenario A: Device Not Found
-If the device is not connected or not recognized:
+#### Option A: Install via INF File (Simplest Method)
+1. Navigate to the `m1/v.3.1.1/dxm1drv/` directory.
+2. Right-click on the **dxm1drv.inf** file.
+3. Select **Install** from the context menu.
+4. If prompted with a security warning about the driver publisher, click **Install** or **Yes** to proceed.
+5. Wait for the installation to complete.
 
-* **Status:** "Device not found!!!"
-* **Action:** Check the physical connection of the device and click **"Open Device Manager"** to troubleshoot.
+#### Option B: Install via Device Manager
+1. Right-click on the **Start menu** and select **Device Manager**.
+2. Locate your DeepX NPU device. It may appear under:
+   - **Other devices** (if not yet installed)
+   - **Unknown devices** (with a yellow exclamation mark)
+3. Right-click on the device and select **Update driver**.
+4. Choose **Browse my computer for drivers**.
+5. Click **Browse** and navigate to the `m1/v.3.1.1/dxm1drv/` directory.
+6. Click **Next** and follow the on-screen instructions to complete the installation.
+7. If prompted with a security warning about the driver publisher, click **Install this driver software anyway**.
 
-#### Scenario B: Device Found & Ready to Install
-If the device is connected, the installer will display the current driver status and the version available for installation.
-
-* **Top Section:** Displays the new driver package version (e.g., `dxm1drv.zip`).
-* **Green Button ("Installed" or "Install"):** * Click this button to install or update the driver.
-    * The version number to the left of the button indicates the version that will be installed.
-* **Bottom Section ("Driver OK!!!"):** * Shows the currently installed driver version on your system.
-    * **"Number of DX-M1 devices found"** indicates the count of recognized devices.
+#### Option C: Install via Command Line (Advanced)
+Open Command Prompt or PowerShell as Administrator and run:
+```powershell
+pnputil /add-driver "path\to\m1\v.3.1.1\dxm1drv\dxm1drv.inf" /install
+```
 
 ### Step 4: Verify Installation
-After clicking the **Install** button and completing the process, you can click **"Open Device Manager"** at the bottom left to verify that the "DeepX AI Accelerator" device is listed correctly without errors.
+1. Open **Device Manager** (Right-click Start menu → Device Manager).
+2. Look for **DeepX AI Accelerator** or **DX-M1** device.
+3. Verify that the device is listed without any warning icons.
+4. You can right-click the device and select **Properties** → **Driver** tab to confirm the driver version.
 
 ---
 
@@ -48,42 +69,260 @@ After clicking the **Install** button and completing the process, you can click 
 
 After installing the driver, you must set up the runtime libraries and tools.
 
-### Step 1: Locate Runtime Files
-The runtime files are located in:
-> **Directory:** `m1/v.3.1.1/dx_rt/`
+The runtime files are located in: **`m1/v.3.1.1/dx_rt/`**
 
-### Step 2: Understanding the Tools
-The package contains the following key components:
+### Step 1: Understanding the Tools
+The package contains the following components:
 
-* **Core Libraries:** `dxrt.dll`, `onnxruntime.dll`
-* **System Service:** `dxrtd.exe` (DeepX Runtime Daemon)
-* **Utilities:**
-    * `check_versions.exe`: Check version of libraries and driver.
-    * `dxtop.exe`: Monitor NPU utilization.
-    * `dxbenchmark.exe`: Benchmark performance.
-    * `dxrt-cli.exe`: Command-line interface tool.
-* **Sample Applications:** `run_model.exe`, `run_async_model.exe`, etc.
+#### Core Libraries
+* **`dxrt.dll`** - Main runtime library for NPU inference
+* **`onnxruntime.dll`** - ONNX Runtime library for CPU operations (if compiled with ONNX support)
 
-### Step 3: Configure `dxrtd.exe` (Startup Setup)
+#### System Service
+* **`dxrtd.exe`** - DeepX Runtime Daemon
+  - Manages multi-process and multi-device support
+  - Must be running for NPU operations
+  - Handles device resource allocation and coordination
+
+#### Command-Line Tools
+
+* **`dxrt-cli.exe`** - Device management and firmware interface tool
+  - Check device status: `dxrt-cli.exe -s`
+  - Get device information: `dxrt-cli.exe -i`
+  - Monitor device status: `dxrt-cli.exe -m <seconds>`
+  - Reset NPU device: `dxrt-cli.exe -r`
+  - Show version requirements: `dxrt-cli.exe -v`
+  - Update firmware: `dxrt-cli.exe -u <firmware.bin>`
+
+* **`parse_model.exe`** - Model inspection tool
+  - Parse and display `.dxnn` model information
+  - Usage: `parse_model.exe -m <model.dxnn>`
+  - Options:
+    - `-v` : Verbose output with task dependencies
+    - `-o <file>` : Save output to file
+    - `-j` : Extract JSON data (graph_info, rmap_info)
+
+* **`run_model.exe`** - Single model inference tool
+  - Run inference on a single model
+  - Usage: `run_model.exe -m <model.dxnn> -l <loops>`
+  - Options:
+    - `-i <input>` : Specify input file
+    - `-o <output>` : Specify output file
+    - `-l <loops>` : Number of inference loops
+    - `-t <seconds>` : Run for specified time duration
+    - `-w <count>` : Warmup runs before measurement
+    - `-v` : Verbose output with performance metrics
+    - `--use-ort` : Enable ONNX Runtime for CPU operations
+
+* **`dxbenchmark.exe`** - Performance benchmarking utility
+  - Batch performance testing for multiple models
+  - Generates HTML reports with visualizations
+  - Usage: `dxbenchmark.exe --dir <model_directory> -l <loops>`
+  - Options:
+    - `--dir <path>` : Model directory
+    - `-l <loops>` : Number of inference loops (default: 30)
+    - `-t <seconds>` : Time duration to run
+    - `--warmup <count>` : Warmup iterations
+    - `--result-path <path>` : Output directory for reports
+    - `--recursive` : Include subdirectories
+    - `-v` : Show detailed performance metrics
+
+* **`dxtop.exe`** - Real-time NPU monitoring utility
+  - Terminal-based monitoring tool
+  - Displays NPU core utilization and DRAM usage
+  - Real-time device status updates
+  - Usage: `dxtop.exe`
+
+### Step 2: Configure `dxrtd.exe` (Startup Setup)
 **Important:** The `dxrtd.exe` (DeepX Runtime Daemon) must be running for the NPU to function properly. It is recommended to configure it to run automatically at Windows startup.
 
-**Manual Setup Procedure:**
-1.  Right-click `dxrtd.exe` in the `m1/v.3.1.1/dx_rt/` folder and select **Create shortcut**.
-2.  Press `Win + R` on your keyboard to open the Run dialog.
-3.  Type `shell:startup` and press Enter. This opens the Windows Startup folder.
-4.  Move the **shortcut** you created in step 1 into this Startup folder.
-5.  Restart your computer or manually run `dxrtd.exe` once to start the service immediately.
+Choose one of the following methods to configure automatic startup:
+
+#### Option A: Using Startup Folder (Simplest)
+1. Right-click `dxrtd.exe` in the `m1/v.3.1.1/dx_rt/` folder and select **Create shortcut**.
+2. Press `Win + R` to open the Run dialog.
+3. Type `shell:startup` and press Enter to open the Startup folder.
+4. Move the shortcut you created in step 1 into this Startup folder.
+5. Restart your computer or manually run `dxrtd.exe` once to start the daemon immediately.
+
+#### Option B: Using Windows Service (Recommended for Production)
+1. Open Command Prompt or PowerShell **as Administrator**.
+2. Navigate to the `m1/v.3.1.1/dx_rt/` directory:
+   ```powershell
+   cd path\to\m1\v.3.1.1\dx_rt
+   ```
+3. Create the service using `sc create`:
+   ```powershell
+   sc create DxrtService binPath= "%CD%\dxrtd.exe" start= auto DisplayName= "DeepX Runtime Service"
+   ```
+4. Start the service:
+   ```powershell
+   sc start DxrtService
+   ```
+5. Verify the service is running:
+   ```powershell
+   sc query DxrtService
+   ```
+
+**To remove the service later:**
+```powershell
+sc stop DxrtService
+sc delete DxrtService
+```
+
+#### Option C: Using Task Scheduler (Alternative)
+1. Press `Win + R` and type `taskschd.msc` to open Task Scheduler.
+2. In the right panel, click **Create Task** (not "Create Basic Task").
+3. In the **General** tab:
+   - Name: `DeepX Runtime Daemon`
+   - Check **Run with highest privileges**
+   - Check **Run whether user is logged on or not**
+4. In the **Triggers** tab:
+   - Click **New**
+   - Begin the task: **At startup**
+   - Click **OK**
+5. In the **Actions** tab:
+   - Click **New**
+   - Action: **Start a program**
+   - Program/script: Browse and select `dxrtd.exe` from `m1/v.3.1.1/dx_rt/`
+   - Click **OK**
+6. In the **Conditions** tab:
+   - Uncheck **Start the task only if the computer is on AC power** (if applicable)
+7. In the **Settings** tab:
+   - Check **Allow task to be run on demand**
+   - Check **If the task fails, restart every: 1 minute**
+8. Click **OK** and enter your Windows password if prompted.
+9. Restart your computer or right-click the task and select **Run** to start immediately.
 
 ---
 
 ## 4. Verification
 
-To ensure everything is set up correctly:
+To ensure everything is set up correctly, follow these verification steps:
 
-1.  Open a command prompt (cmd) or PowerShell.
-2.  Navigate to the `m1/v.3.1.1/dx_rt/` directory.
-3.  Run the version check tool:
-    ```powershell
-    .\dxrt-cli.exe -s
-    ```
-4.  If the output shows valid version numbers for both the driver and runtime, the installation is complete.
+### Step 1: Check Device Status
+Open Command Prompt or PowerShell and navigate to the `m1/v.3.1.1/dx_rt/` directory:
+
+```cmd
+cd path\to\m1\v.3.1.1\dx_rt
+```
+
+Run the device status check:
+```cmd
+dxrt-cli.exe -s
+```
+
+**Expected Output:**
+- Device status information
+- Driver version
+- Firmware version
+- Device count and IDs
+
+If you see device information without errors, the driver is correctly installed.
+
+### Step 2: Verify Runtime Daemon
+Check if `dxrtd.exe` is running:
+
+**Using Task Manager:**
+1. Press `Ctrl + Shift + Esc` to open Task Manager
+2. Go to the **Details** tab
+3. Look for `dxrtd.exe` in the process list
+
+**Using Command Line:**
+
+For Command Prompt (cmd):
+```cmd
+tasklist | findstr dxrtd.exe
+```
+
+For PowerShell:
+```powershell
+Get-Process | Where-Object {$_.Name -eq "dxrtd"}
+```
+
+Or simply (works in both cmd and PowerShell):
+```
+tasklist | findstr dxrtd.exe
+```
+
+If `dxrtd.exe` is not running, start it manually or check your startup configuration from Step 3.
+
+### Step 3: Get Detailed Device Information
+For comprehensive device information:
+```cmd
+dxrt-cli.exe -i
+```
+
+This displays detailed hardware information, temperature, and utilization status.
+
+### Step 4: Monitor NPU in Real-Time (Optional)
+To verify NPU functionality with real-time monitoring:
+```cmd
+dxtop.exe
+```
+
+This launches a terminal-based monitoring interface showing:
+- NPU core utilization
+- Memory usage
+- Device temperature
+- Active processes
+
+Press `q` to quit the monitoring tool.
+
+### Step 5: Test with a Model (If Available)
+If you have a `.dxnn` model file, you can verify inference functionality:
+
+**Parse the model:**
+```cmd
+parse_model.exe -m your_model.dxnn
+```
+
+**Run inference:**
+```cmd
+run_model.exe -m your_model.dxnn -l 10
+```
+
+This runs 10 inference loops and displays performance metrics.
+
+---
+
+## Troubleshooting
+
+### Device Not Detected
+- Verify the device is properly seated in the PCIe/M.2 slot
+- Check Device Manager for any warning icons
+- Try reinstalling the driver using Option A (INF right-click install)
+
+### dxrtd.exe Not Running
+- Manually run `dxrtd.exe` from the dx_rt directory
+- Check if it's blocked by Windows Firewall or antivirus software
+- Run as Administrator if permission issues occur
+
+### Driver Installation Fails
+- Ensure you have Administrator privileges
+- Disable Driver Signature Enforcement temporarily (for testing only):
+  1. Restart Windows
+  2. Press F8 during boot (or Shift + Restart → Troubleshoot → Advanced Options → Startup Settings → Restart → Press 7)
+  3. Select "Disable driver signature enforcement"
+  4. Install the driver
+
+### Performance Issues
+- Ensure `dxrtd.exe` is running
+- Check for Windows power management settings (set to High Performance)
+- Verify adequate cooling for the NPU device
+- Use `dxtop.exe` to monitor thermal throttling
+
+---
+
+## Next Steps
+
+Once verification is complete, your DeepX NPU is ready for use. For detailed usage of each tool, run:
+```cmd
+<tool_name>.exe -h
+```
+
+For example:
+```cmd
+run_model.exe -h
+dxbenchmark.exe -h
+```
