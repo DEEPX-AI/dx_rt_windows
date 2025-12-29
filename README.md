@@ -89,7 +89,7 @@ Available demos:
 - `run_classifier.bat` - Image classification
 - `run_yolo.bat` - YOLO inference
 - `run_yolo_pose.bat` - Pose estimation
-- `run_yolo_multi.bat` - Multi-model demo
+- `run_yolo_multi.bat` - Multi-stream demo (single model, multiple video sources; one window per source)
 
 See the [installation guide](docs/v.3.1.1/Installation_on_Windows.md#4-demo-applications-setup-optional) for detailed instructions.
 
@@ -115,8 +115,8 @@ See the [installation guide](docs/v.3.1.1/Installation_on_Windows.md#4-demo-appl
 | **run_classifier.bat** | Image classification demo (ImageNet) |
 | **run_yolo.bat** | Basic YOLO inference |
 | **run_yolo_pose.bat** | Pose estimation with YOLOv5Pose |
-| **run_yolo_multi.bat** | Multi-model YOLO demo |
-| **run_ppu_yolo_multi.bat** | PPU-optimized multi-YOLO |
+| **run_yolo_multi.bat** | Multi-stream YOLO demo (single model, multiple video sources; one window per source) |
+| **run_ppu_yolo_multi.bat** | PPU-optimized multi-stream YOLO demo (multiple video sources) |
 | **od_segmentation.bat** | Object detection & segmentation |
 
 Run any tool with `-h` for detailed usage.

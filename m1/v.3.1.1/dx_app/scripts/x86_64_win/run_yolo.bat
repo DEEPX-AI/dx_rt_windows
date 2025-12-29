@@ -1,9 +1,7 @@
 @echo off
 setlocal
 pushd ..\..\
-set "OPENCV_LIB_PATH=vcpkg_installed\x64-windows\lib\"
-set "OPENCV_DLL_PATH=vcpkg_installed\x64-windows\bin\"
-set PATH=%OPENCV_LIB_PATH%;%OPENCV_DLL_PATH%;..\dx_rt\bin;%PATH%
+set PATH=..\dx_rt\bin;%PATH%
 
 set "APP_MODEL_PATH=assets\models\YoloV7.dxnn"
 set "APP_CONFIG_PARAM=4"

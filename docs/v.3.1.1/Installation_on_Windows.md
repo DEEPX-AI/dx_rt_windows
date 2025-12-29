@@ -237,8 +237,8 @@ The demo applications are located in `m1/v.3.1.1/dx_app/scripts/x86_64_win/`. Ea
 | **run_classifier.bat** | Image classification demo | ImageNet classifiers |
 | **run_yolo.bat** | YOLO model inference | YOLOv7, YOLOv5S |
 | **run_yolo_pose.bat** | Pose estimation demo | YOLOv5Pose |
-| **run_yolo_multi.bat** | Multi-model YOLO demo | Multiple YOLO models |
-| **run_ppu_yolo_multi.bat** | PPU-optimized multi-YOLO | YOLO with post-processing |
+| **run_yolo_multi.bat** | Multi-stream YOLO demo (one window per source) | Single YOLO model, multiple video sources |
+| **run_ppu_yolo_multi.bat** | PPU-optimized multi-stream YOLO demo | YOLO with post-processing, multiple video sources |
 | **od_segmentation.bat** | Object detection & segmentation | Combined detection models |
 
 #### Running a Demo:
@@ -273,6 +273,7 @@ Example configuration files:
 - `example/run_detector/yolov5s3_example.json`
 - `example/run_classifier/imagenet_example.json`
 - `example/yolo_multi/yolo_multi_demo.json`
+- `example/yolo_multi/yolo_multi_input_source_demo.json`
 
 ---
 
