@@ -4,6 +4,9 @@ This document provides step-by-step instructions for installing the DeepX NPU dr
 
 ## 1. Prerequisite
 * **OS:** Windows 10 or later (x86_64)
+* **Visual C++ Redistributable:** Microsoft Visual C++ 2015-2022 Redistributable (x64)
+  - Download from: https://aka.ms/vs/17/release/vc_redist.x64.exe
+  - Required for running DeepX runtime and demo applications
 * **Hardware:** DEEPX NPU Device (e.g., DX-M1) connected via:
   - PCIe slot
   - M.2 slot

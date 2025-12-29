@@ -27,17 +27,22 @@ dx_rt_windows/
 ## 💻 System Requirements
 
 * **OS**: Windows 10 or later (x86_64)
+* **Visual C++ Redistributable**: Microsoft Visual C++ 2015-2022 Redistributable (x64)
+  - Download: https://aka.ms/vs/17/release/vc_redist.x64.exe
 * **Hardware**: DeepX NPU device installed in PCIe slot, M.2 slot, or connected via USB 4.0
 * **Privileges**: Administrator rights required for driver installation
 
 ## 📦 Quick Start
 
-### 1. Install Driver
+### 1. Install Visual C++ Redistributable
+Download and install [Microsoft Visual C++ 2015-2022 Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+
+### 2. Install Driver
 Navigate to `m1/v.3.1.1/dxm1drv/` and right-click **`dxm1drv.inf`** → Select **Install**
 
 Alternative methods available in the [full installation guide](docs/v.3.1.1/Installation_on_Windows.md).
 
-### 2. Configure Runtime Service
+### 3. Configure Runtime Service
 The `dxrtd.exe` daemon must run for NPU operations:
 
 **Simple Method** - Add to Startup folder:
@@ -53,7 +58,7 @@ sc create DxrtService binPath= "%CD%\dxrtd.exe" start= auto DisplayName= "DeepX 
 sc start DxrtService
 ```
 
-### 3. Verify Installation
+### 4. Verify Installation
 ```cmd
 cd m1\v.3.1.1\dx_rt
 dxrt-cli.exe -s
@@ -61,7 +66,7 @@ dxrt-cli.exe -s
 
 If device information appears, installation is complete.
 
-### 4. Run Demo Applications (Optional)
+### 5. Run Demo Applications (Optional)
 
 The SDK includes pre-built demo applications for object detection, classification, and pose estimation.
 
