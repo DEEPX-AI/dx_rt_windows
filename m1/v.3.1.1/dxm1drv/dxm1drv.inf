@@ -22,7 +22,7 @@ Signature			= "$WINDOWS NT$"
 Class				= DEEPX NPU Device
 ClassGuid			= {378A9528-02D5-4F5E-8CEC-6554BB6CD028}
 Provider			= %ProviderString%
-DriverVer = 12/24/2025,14.13.36.149
+DriverVer = 12/30/2025,10.22.31.314
 CatalogFile			= dxm1drv.cat
 PnpLockdown			= 1
 
