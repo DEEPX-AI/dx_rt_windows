@@ -9,8 +9,8 @@ This repository provides **prebuilt binaries** for DeepX NPU devices on Windows,
 ```
 dx_rt_windows/
 ├── m1/v.3.1.1/
-│   ├── dxm1drv/           # PCIe driver files (INF, SYS, CAT)
-│   ├── dx_rt/             # Runtime libraries and tools
+│   ├── dxm1drv/           # PCIe driver package (dxm1drv.zip)
+│   ├── dx_rt/             # Runtime (bin/, include/, lib/)
 │   └── dx_app/            # Demo applications and examples
 └── docs/v.3.1.1/
     └── Installation_on_Windows.md
@@ -38,29 +38,36 @@ dx_rt_windows/
 Download and install [Microsoft Visual C++ 2015-2022 Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
 ### 2. Install Driver
-Navigate to `m1/v.3.1.1/dxm1drv/` and right-click **`dxm1drv.inf`** → Select **Install**
+Navigate to `m1/v.3.1.1/dxm1drv/` and extract **`dxm1drv.zip`**.
+
+Then, in the extracted folder (contains `dxm1drv.inf/.sys/.cat`), right-click **`dxm1drv.inf`** → Select **Install**.
 
 Alternative methods available in the [full installation guide](docs/v.3.1.1/Installation_on_Windows.md).
 
 ### 3. Configure Runtime Service
 The `dxrtd.exe` daemon must run for NPU operations:
 
-**Simple Method** - Add to Startup folder:
-```cmd
-Win + R → shell:startup
-```
-Create shortcut to `dxrtd.exe` and move it to the Startup folder.
-
 **Production Method** - Register as Windows Service:
 ```cmd
-cd m1\v.3.1.1\dx_rt
-sc create DxrtService binPath= "%CD%\dxrtd.exe" start= auto DisplayName= "DeepX Runtime Service"
-sc start DxrtService
+cd m1\v.3.1.1\dx_rt\bin
+dxrtd.exe --install
+dxrtd.exe --start
 ```
+
+To manage the service later:
+```cmd
+cd m1\v.3.1.1\dx_rt\bin
+dxrtd.exe --stop
+dxrtd.exe --uninstall
+```
+
+For full options: `dxrtd.exe -h`
+
+Note: `dxrtd.exe --run` (or `-r`) is intended for Windows SCM (Service Control Manager) and should not be used for normal interactive execution.
 
 ### 4. Verify Installation
 ```cmd
-cd m1\v.3.1.1\dx_rt
+cd m1\v.3.1.1\dx_rt\bin
 dxrt-cli.exe -s
 ```
 
@@ -95,7 +102,7 @@ See the [installation guide](docs/v.3.1.1/Installation_on_Windows.md#4-demo-appl
 
 ## 🛠️ Available Tools
 
-### Runtime Tools (`m1/v.3.1.1/dx_rt/`)
+### Runtime Tools (`m1/v.3.1.1/dx_rt/bin/`)
 
 | Tool | Description |
 |------|-------------|
@@ -130,7 +137,7 @@ Run any tool with `-h` for detailed usage.
 
 ## ✅ Verification Checklist
 
-- [ ] Driver installed (Device Manager shows "DeepX AI Accelerator")
+- [ ] Driver installed (Device Manager shows "DEEPX DEVICE")
 - [ ] `dxrtd.exe` is running (check Task Manager)
 - [ ] `dxrt-cli.exe -s` shows device information
 - [ ] No errors in Device Manager
@@ -143,7 +150,7 @@ Run any tool with `-h` for detailed usage.
 - Try reinstalling driver
 
 **dxrtd.exe not running?**
-- Run manually from `dx_rt` folder
+- Run manually from `dx_rt/bin` folder
 - Check Windows Firewall/antivirus
 - Run as Administrator
 

@@ -29,16 +29,18 @@ Ensure your DeepX NPU device is properly connected to your system:
 The driver files are located in:
 > **Directory:** `m1/v.3.1.1/dxm1drv/`
 
-The directory contains the following files:
-* `dxm1drv.inf` - Driver information file
-* `dxm1drv.sys` - Driver binary
-* `dxm1drv.cat` - Catalog file for driver signature
+The directory contains the following file:
+* `dxm1drv.zip` - Driver package (contains `dxm1drv.inf`, `dxm1drv.sys`, `dxm1drv.cat`)
+
+Extract `dxm1drv.zip` first. After extraction, the driver files will be available under the extracted `dxm1drv/` folder.
 
 ### Step 3: Install the Driver
 
 #### Option A: Install via INF File (Simplest Method)
 1. Navigate to the `m1/v.3.1.1/dxm1drv/` directory.
-2. Right-click on the **dxm1drv.inf** file.
+2. Extract **dxm1drv.zip**.
+3. Open the extracted `dxm1drv/` folder.
+4. Right-click on the **dxm1drv.inf** file.
 3. Select **Install** from the context menu.
 4. If prompted with a security warning about the driver publisher, click **Install** or **Yes** to proceed.
 5. Wait for the installation to complete.
@@ -50,14 +52,14 @@ The directory contains the following files:
    - **Unknown devices** (with a yellow exclamation mark)
 3. Right-click on the device and select **Update driver**.
 4. Choose **Browse my computer for drivers**.
-5. Click **Browse** and navigate to the `m1/v.3.1.1/dxm1drv/` directory.
+5. Click **Browse** and navigate to the extracted driver folder that contains `dxm1drv.inf`.
 6. Click **Next** and follow the on-screen instructions to complete the installation.
 7. If prompted with a security warning about the driver publisher, click **Install this driver software anyway**.
 
 #### Option C: Install via Command Line (Advanced)
 Open Command Prompt or PowerShell as Administrator and run:
 ```powershell
-pnputil /add-driver "path\to\m1\v.3.1.1\dxm1drv\dxm1drv.inf" /install
+pnputil /add-driver "path\to\extracted\dxm1drv\dxm1drv.inf" /install
 ```
 
 ### Step 4: Verify Installation
@@ -74,15 +76,20 @@ After installing the driver, you must set up the runtime libraries and tools.
 
 The runtime files are located in: **`m1/v.3.1.1/dx_rt/`**
 
+Directory layout:
+* **`m1/v.3.1.1/dx_rt/bin/`** - executables and runtime DLLs
+* **`m1/v.3.1.1/dx_rt/include/`** - C/C++ headers
+* **`m1/v.3.1.1/dx_rt/lib/`** - libraries and CMake config files
+
 ### Step 1: Understanding the Tools
 The package contains the following components:
 
 #### Core Libraries
-* **`dxrt.dll`** - Main runtime library for NPU inference
-* **`onnxruntime.dll`** - ONNX Runtime library for CPU operations (if compiled with ONNX support)
+* **`dxrt.dll`** - Main runtime library for NPU inference (in `dx_rt/bin/`)
+* **`onnxruntime.dll`** - ONNX Runtime library for CPU operations (if compiled with ONNX support, in `dx_rt/bin/`)
 
 #### System Service
-* **`dxrtd.exe`** - DeepX Runtime Daemon
+* **`dxrtd.exe`** - DeepX Runtime Daemon (in `dx_rt/bin/`)
   - Manages multi-process and multi-device support
   - Must be running for NPU operations
   - Handles device resource allocation and coordination
@@ -139,41 +146,36 @@ The package contains the following components:
 ### Step 2: Configure `dxrtd.exe` (Startup Setup)
 **Important:** The `dxrtd.exe` (DeepX Runtime Daemon) must be running for the NPU to function properly. It is recommended to configure it to run automatically at Windows startup.
 
+**Note:** `dxrtd.exe --run` (or `-r`) is intended for Windows SCM (Service Control Manager) and should not be used for normal interactive execution.
+
 Choose one of the following methods to configure automatic startup:
 
-#### Option A: Using Startup Folder (Simplest)
-1. Right-click `dxrtd.exe` in the `m1/v.3.1.1/dx_rt/` folder and select **Create shortcut**.
-2. Press `Win + R` to open the Run dialog.
-3. Type `shell:startup` and press Enter to open the Startup folder.
-4. Move the shortcut you created in step 1 into this Startup folder.
-5. Restart your computer or manually run `dxrtd.exe` once to start the daemon immediately.
-
-#### Option B: Using Windows Service (Recommended for Production)
+#### Option A: Using Windows Service (Recommended for Production)
 1. Open Command Prompt or PowerShell **as Administrator**.
-2. Navigate to the `m1/v.3.1.1/dx_rt/` directory:
+2. Navigate to the `m1/v.3.1.1/dx_rt/bin/` directory:
    ```powershell
-   cd path\to\m1\v.3.1.1\dx_rt
+   cd path\to\m1\v.3.1.1\dx_rt\bin
    ```
-3. Create the service using `sc create`:
+3. Install the Windows service:
    ```powershell
-   sc create DxrtService binPath= "%CD%\dxrtd.exe" start= auto DisplayName= "DeepX Runtime Service"
+   .\dxrtd.exe --install
    ```
 4. Start the service:
    ```powershell
-   sc start DxrtService
+   .\dxrtd.exe --start
    ```
+
 5. Verify the service is running:
-   ```powershell
-   sc query DxrtService
-   ```
+   - Check the Windows Services list (`services.msc`) for the DeepX runtime service
+   - Or confirm the `dxrtd.exe` process is running in Task Manager
 
 **To remove the service later:**
 ```powershell
-sc stop DxrtService
-sc delete DxrtService
+.\dxrtd.exe --stop
+.\dxrtd.exe --uninstall
 ```
 
-#### Option C: Using Task Scheduler (Alternative)
+#### Option B: Using Task Scheduler (Alternative)
 1. Press `Win + R` and type `taskschd.msc` to open Task Scheduler.
 2. In the right panel, click **Create Task** (not "Create Basic Task").
 3. In the **General** tab:
@@ -187,7 +189,7 @@ sc delete DxrtService
 5. In the **Actions** tab:
    - Click **New**
    - Action: **Start a program**
-   - Program/script: Browse and select `dxrtd.exe` from `m1/v.3.1.1/dx_rt/`
+   - Program/script: Browse and select `dxrtd.exe` from `m1/v.3.1.1/dx_rt/bin/`
    - Click **OK**
 6. In the **Conditions** tab:
    - Uncheck **Start the task only if the computer is on AC power** (if applicable)
@@ -282,10 +284,10 @@ Example configuration files:
 To ensure everything is set up correctly, follow these verification steps:
 
 ### Step 1: Check Device Status
-Open Command Prompt or PowerShell and navigate to the `m1/v.3.1.1/dx_rt/` directory:
+Open Command Prompt or PowerShell and navigate to the `m1/v.3.1.1/dx_rt/bin/` directory:
 
 ```cmd
-cd path\to\m1\v.3.1.1\dx_rt
+cd path\to\m1\v.3.1.1\dx_rt\bin
 ```
 
 Run the device status check:
@@ -375,7 +377,7 @@ This runs 10 inference loops and displays performance metrics.
 - Try reinstalling the driver using Option A (INF right-click install)
 
 ### dxrtd.exe Not Running
-- Manually run `dxrtd.exe` from the dx_rt directory
+- Manually run `dxrtd.exe` from the `dx_rt/bin/` directory
 - Check if it's blocked by Windows Firewall or antivirus software
 - Run as Administrator if permission issues occur
 
