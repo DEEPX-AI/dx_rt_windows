@@ -44,6 +44,9 @@ Then, in the extracted folder (contains `dxm1drv.inf/.sys/.cat`), right-click **
 
 Alternative methods available in the [full installation guide](docs/v.3.1.1/Installation_on_Windows.md).
 
+> Note: If a newer driver is already installed and you install an older driver, Windows may still bind/load the newer driver even if the older installation appears to succeed.
+> If you need to use an older driver, uninstall/remove the currently installed driver(s) completely (reboot if needed), then install the desired older version.
+
 ### 3. Configure Runtime Service
 The `dxrtd.exe` daemon must run for NPU operations:
 

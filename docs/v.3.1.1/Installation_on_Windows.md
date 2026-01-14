@@ -62,6 +62,9 @@ Open Command Prompt or PowerShell as Administrator and run:
 pnputil /add-driver "path\to\extracted\dxm1drv\dxm1drv.inf" /install
 ```
 
+> Note: If a newer driver is already installed and you install an older driver, Windows may still bind/load the newer driver even if the older installation appears to succeed.
+> If you need to use an older driver, uninstall/remove the currently installed driver(s) completely (reboot if needed), then install the desired older version.
+
 ### Step 4: Verify Installation
 1. Open **Device Manager** (Right-click Start menu → Device Manager).
 2. Look for **DeepX AI Accelerator** or **DX-M1** device.
