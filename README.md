@@ -1,19 +1,25 @@
 # DeepX NPU Windows Runtime & Driver
 
-**Windows runtime libraries, drivers, and installation documentation for DEEPX AI accelerators.**
+**Windows runtime libraries, drivers, and demo applications for DEEPX AI accelerators.**
 
-This repository provides **prebuilt binaries** for DeepX NPU devices on Windows, including PCIe device drivers and runtime environment for DX-M1 accelerators.
+This repository provides **prebuilt binaries** for DeepX NPU devices on Windows, including PCIe device drivers, runtime environment, and demo applications for DX-M1 accelerators.
+
+## 📦 Prebuilt Versions
+
+| Component | Version |
+|-----------|---------|
+| **dx_rt** | 3.2.0 |
+| **dx_app** | 3.3.0 |
 
 ## 📂 Repository Structure
 
 ```
 dx_rt_windows/
-├── m1/v.3.1.1/
-│   ├── dxm1drv/           # PCIe driver package (dxm1drv.zip)
-│   ├── dx_rt/             # Runtime (bin/, include/, lib/)
-│   └── dx_app/            # Demo applications and examples
-└── docs/v.3.1.1/
-    └── Installation_on_Windows.md
+└── m1/v3.2.0/
+    ├── dxm1drv/           # PCIe driver package (dxm1drv.zip)
+    ├── dx_rt/             # Runtime (bin/, include/, lib/)
+    └── dx_app/            # Demo applications
+        └── v3.1.1/        # Legacy demo applications (optional)
 ```
 
 ## 🚀 Supported Devices
@@ -30,7 +36,7 @@ dx_rt_windows/
 * **Visual C++ Redistributable**: Microsoft Visual C++ 2015-2022 Redistributable (x64)
   - Download: https://aka.ms/vs/17/release/vc_redist.x64.exe
 * **Hardware**: DeepX NPU device installed in PCIe slot, M.2 slot, or connected via USB 4.0
-* **Privileges**: Administrator rights required for driver installation
+* **Privileges**: Administrator rights required for driver installation and service registration
 
 ## 📦 Quick Start
 
@@ -38,74 +44,65 @@ dx_rt_windows/
 Download and install [Microsoft Visual C++ 2015-2022 Redistributable (x64)](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
 ### 2. Install Driver
-Navigate to `m1/v.3.1.1/dxm1drv/` and extract **`dxm1drv.zip`**.
+Navigate to `m1/v3.2.0/dxm1drv/` and extract **`dxm1drv.zip`**.
 
 Then, in the extracted folder (contains `dxm1drv.inf/.sys/.cat`), right-click **`dxm1drv.inf`** → Select **Install**.
 
-Alternative methods available in the [full installation guide](docs/v.3.1.1/Installation_on_Windows.md).
-
-> Note: If a newer driver is already installed and you install an older driver, Windows may still bind/load the newer driver even if the older installation appears to succeed.
-> If you need to use an older driver, uninstall/remove the currently installed driver(s) completely (reboot if needed), then install the desired older version.
+Ensure the device appears correctly in Device Manager as "DEEPX DEVICE".
 
 ### 3. Configure Runtime Service
 The `dxrtd.exe` daemon must run for NPU operations:
 
-**Production Method** - Register as Windows Service:
+**Register as Windows Service:**
 ```cmd
-cd m1\v.3.1.1\dx_rt\bin
+cd m1\v3.2.0\dx_rt\bin
 dxrtd.exe --install
 dxrtd.exe --start
 ```
 
 To manage the service later:
 ```cmd
-cd m1\v.3.1.1\dx_rt\bin
+cd m1\v3.2.0\dx_rt\bin
 dxrtd.exe --stop
 dxrtd.exe --uninstall
 ```
 
 For full options: `dxrtd.exe -h`
 
-Note: `dxrtd.exe --run` (or `-r`) is intended for Windows SCM (Service Control Manager) and should not be used for normal interactive execution.
-
 ### 4. Verify Installation
 ```cmd
-cd m1\v.3.1.1\dx_rt\bin
+cd m1\v3.2.0\dx_rt\bin
 dxrt-cli.exe -s
 ```
 
 If device information appears, installation is complete.
 
-### 5. Run Demo Applications (Optional)
+### 5. Run Demo Applications
 
-The SDK includes pre-built demo applications for object detection, classification, and pose estimation.
+The prebuilt demo applications (`dx_app`) are provided **only to verify** that the driver and `dxrtd` service are installed and working correctly.
 
-**Download Models and Videos:**
+**Step 1: Download Models and Videos**
 ```cmd
-cd m1\v.3.1.1\dx_app
+cd m1\v3.2.0\dx_app
 setup.bat
 ```
 
-This downloads DXNN models and sample videos to `assets/` directory.
+This downloads DXNN models and sample videos to the `assets/` directory.
 
-**Run a Demo:**
+**Step 2: Run Demo**
 ```cmd
-cd scripts\x86_64_win
-run_detector.bat
+run_demo.bat
 ```
 
-Available demos:
-- `run_detector.bat` - Object detection (YOLOv5, YOLOv7, YOLOv8, etc.)
-- `run_classifier.bat` - Image classification
-- `run_yolo.bat` - YOLO inference
-- `run_yolo_pose.bat` - Pose estimation
-- `run_yolo_multi.bat` - Multi-stream demo (single model, multiple video sources; one window per source)
+This runs the demo application to verify NPU operation.
 
-See the [installation guide](docs/v.3.1.1/Installation_on_Windows.md#4-demo-applications-setup-optional) for detailed instructions.
+> ⚠️ **Note:** The `dx_app` included here is a minimal demo for verification purposes only.
+> 
+> 💡 **For actual development and more demo applications**, please use the [dx_app repository](https://github.com/DEEPX-AI/dx_app).
 
 ## 🛠️ Available Tools
 
-### Runtime Tools (`m1/v.3.1.1/dx_rt/bin/`)
+### Runtime Tools (`m1/v3.2.0/dx_rt/bin/`)
 
 | Tool | Description |
 |------|-------------|
@@ -116,27 +113,36 @@ See the [installation guide](docs/v.3.1.1/Installation_on_Windows.md#4-demo-appl
 | **dxbenchmark.exe** | Performance benchmarking |
 | **dxtop.exe** | Real-time NPU monitoring |
 
-### Demo Applications (`m1/v.3.1.1/dx_app/`)
+### Demo Applications (`m1/v3.2.0/dx_app/`)
 
 | Script | Description |
 |--------|-------------|
 | **setup.bat** | Download models and sample videos |
-| **run_detector.bat** | Object detection demo (YOLOv5/v7/v8/v9, YOLOX) |
-| **run_classifier.bat** | Image classification demo (ImageNet) |
-| **run_yolo.bat** | Basic YOLO inference |
-| **run_yolo_pose.bat** | Pose estimation with YOLOv5Pose |
-| **run_yolo_multi.bat** | Multi-stream YOLO demo (single model, multiple video sources; one window per source) |
-| **run_ppu_yolo_multi.bat** | PPU-optimized multi-stream YOLO demo (multiple video sources) |
-| **od_segmentation.bat** | Object detection & segmentation |
+| **run_demo.bat** | Run demo to verify NPU operation |
 
 Run any tool with `-h` for detailed usage.
 
-## 📖 Documentation
+### Legacy Demo Applications (`m1/v3.2.0/dx_app/v3.1.1/`)
 
-* **[Installation Guide](docs/v.3.1.1/Installation_on_Windows.md)** - Complete step-by-step installation instructions
-  - Driver installation (3 methods)
-  - Runtime service configuration (3 methods)
-  - Verification and troubleshooting
+For users who prefer the previous demo interface, legacy demo applications from v3.1.1 are included.
+
+Navigate to `x86_64_win` folder and run the batch scripts:
+
+```cmd
+cd m1\v3.2.0\dx_app\v3.1.1\x86_64_win
+run_detector.bat
+```
+
+| Script | Description |
+|--------|-------------|
+| **run_detector.bat** | Object detection (YOLOv5) |
+| **run_classifier.bat** | Image classification |
+| **run_yolo.bat** | Basic YOLO inference |
+| **run_yolo_pose.bat** | Pose estimation |
+| **run_yolo_multi.bat** | Multi-stream YOLO |
+| **od_segmentation.bat** | Object detection + segmentation |
+
+See [v3.1.1/README.md](m1/v3.2.0/dx_app/v3.1.1/README.md) for detailed instructions.
 
 ## ✅ Verification Checklist
 
@@ -156,8 +162,6 @@ Run any tool with `-h` for detailed usage.
 - Run manually from `dx_rt/bin` folder
 - Check Windows Firewall/antivirus
 - Run as Administrator
-
-See [full troubleshooting guide](docs/v.3.1.1/Installation_on_Windows.md#troubleshooting) for more details.
 
 ## 🤝 Contributing
 
