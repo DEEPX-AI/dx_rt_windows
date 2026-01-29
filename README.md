@@ -8,8 +8,8 @@ This repository provides **prebuilt binaries** for DeepX NPU devices on Windows,
 
 | Component | Version |
 |-----------|---------|
-| **dx_rt** | 3.2.0 |
-| **dx_app** | 3.3.0 |
+| **dx_rt** | v3.2.0 |
+| **dx_app** | v3.0.0 (recommended) / v2.1.0 (legacy) |
 
 ## 📂 Repository Structure
 
@@ -18,8 +18,16 @@ dx_rt_windows/
 └── m1/v3.2.0/
     ├── dxm1drv/           # PCIe driver package (dxm1drv.zip)
     ├── dx_rt/             # Runtime (bin/, include/, lib/)
+    │   ├── bin/           # dxrtd.exe, dxrt-cli.exe, run_model.exe, etc.
+    │   ├── include/       # Header files (dxrt/*.h)
+    │   └── lib/           # Libraries and CMake config
     └── dx_app/            # Demo applications
-        └── v3.1.1/        # Legacy demo applications (optional)
+        ├── setup.bat      # Download models and sample videos
+        ├── v3.0.0/        # Recommended menu-based demo app
+        │   └── bin/       # YOLO, SCRFD, DeepLabV3, etc.
+        └── v2.1.0/        # Legacy script-based demos
+            ├── bin/       # Executables
+            └── example/   # JSON configuration files
 ```
 
 ## 🚀 Supported Devices
@@ -48,7 +56,7 @@ Navigate to `m1/v3.2.0/dxm1drv/` and extract **`dxm1drv.zip`**.
 
 Then, in the extracted folder (contains `dxm1drv.inf/.sys/.cat`), right-click **`dxm1drv.inf`** → Select **Install**.
 
-Ensure the device appears correctly in Device Manager as "DEEPX DEVICE".
+Ensure the device appears correctly in Device Manager as "DEEPX DEVICE - M1 PCI CONTROLLER".
 
 ### 3. Configure Runtime Service
 The `dxrtd.exe` daemon must run for NPU operations:
@@ -89,12 +97,18 @@ setup.bat
 
 This downloads DXNN models and sample videos to the `assets/` directory.
 
-**Step 2: Run Demo**
+**Step 2: Run Demo (v3.0.0 - Recommended)**
 ```cmd
+cd v3.0.0
 run_demo.bat
 ```
 
-This runs the demo application to verify NPU operation.
+This launches an interactive menu-based demo application where you can select various AI demos:
+- Object detection (YOLOv5/v7/v8/v9/v10/v11/v12/v26)
+- Face detection (SCRFD, YOLOv5Face)
+- Pose estimation (YOLOv5Pose with/without PPU)
+- Semantic segmentation (DeepLabV3)
+- Combined YOLO + segmentation demos
 
 > ⚠️ **Note:** The `dx_app` included here is a minimal demo for verification purposes only.
 > 
@@ -106,43 +120,78 @@ This runs the demo application to verify NPU operation.
 
 | Tool | Description |
 |------|-------------|
-| **dxrtd.exe** | Runtime daemon (must be running) |
+| **dxrtd.exe** | Runtime daemon (must be running for NPU operations) |
 | **dxrt-cli.exe** | Device management and firmware interface |
 | **run_model.exe** | Run inference on `.dxnn` models |
 | **parse_model.exe** | Inspect model information |
 | **dxbenchmark.exe** | Performance benchmarking |
 | **dxtop.exe** | Real-time NPU monitoring |
 
-### Demo Applications (`m1/v3.2.0/dx_app/`)
-
-| Script | Description |
-|--------|-------------|
-| **setup.bat** | Download models and sample videos |
-| **run_demo.bat** | Run demo to verify NPU operation |
-
 Run any tool with `-h` for detailed usage.
 
-### Legacy Demo Applications (`m1/v3.2.0/dx_app/v3.1.1/`)
+---
 
-For users who prefer the previous demo interface, legacy demo applications from v3.1.1 are included.
+## 🎯 Demo Applications (`m1/v3.2.0/dx_app/`)
 
-Navigate to `x86_64_win` folder and run the batch scripts:
+### Common Setup
+
+Before running any demo, download models and sample videos:
+```cmd
+cd m1\v3.2.0\dx_app
+setup.bat
+```
+
+---
+
+### v3.0.0 – Recommended Demo App
+
+The v3.0.0 demo provides an interactive menu to select and run various AI demos.
 
 ```cmd
-cd m1\v3.2.0\dx_app\v3.1.1\x86_64_win
-run_detector.bat
+cd m1\v3.2.0\dx_app\v3.0.0
+run_demo.bat
+```
+
+**Available Demos:**
+
+| Category | Models |
+|----------|--------|
+| **Object Detection** | YOLOv5, YOLOv7, YOLOv8, YOLOv9, YOLOv10, YOLOv11, YOLOv12, YOLOv26, YOLOX |
+| **Object Detection (PPU)** | YOLOv5-PPU, YOLOv7-PPU |
+| **Face Detection** | SCRFD, SCRFD-PPU, YOLOv5Face |
+| **Pose Estimation** | YOLOv5Pose, YOLOv5Pose-PPU |
+| **Segmentation** | DeepLabV3, YOLOv8Seg |
+| **Combined** | YOLOv7 + DeepLabV3 |
+| **Classification** | EfficientNet |
+
+---
+
+### v2.1.0 – Legacy Demo Apps
+
+The v2.1.0 directory contains script-based demos with JSON configuration files.
+
+```cmd
+cd m1\v3.2.0\dx_app\v2.1.0
 ```
 
 | Script | Description |
 |--------|-------------|
-| **run_detector.bat** | Object detection (YOLOv5) |
-| **run_classifier.bat** | Image classification |
-| **run_yolo.bat** | Basic YOLO inference |
-| **run_yolo_pose.bat** | Pose estimation |
-| **run_yolo_multi.bat** | Multi-stream YOLO |
+| **run_detector.bat** | Object detection demo |
+| **run_classifier.bat** | Image classification demo |
+| **run_yolo.bat** | Basic YOLO inference demo |
+| **run_yolo_pose.bat** | Pose estimation demo |
+| **run_yolo_multi.bat** | Multi-stream YOLO demo |
+| **run_ppu_yolo_multi.bat** | PPU-accelerated multi-stream YOLO |
 | **od_segmentation.bat** | Object detection + segmentation |
 
-See [v3.1.1/README.md](m1/v3.2.0/dx_app/v3.1.1/README.md) for detailed instructions.
+**JSON Configuration:**
+
+Configuration files are located in `v2.1.0/example/`:
+- `run_classifier/imagenet_example.json`
+- `run_detector/scrfd_example.json`, `yolov5s3_example.json`, etc.
+- `yolo_multi/` – multi-stream configurations
+
+See [dx_app/README.md](m1/v3.2.0/dx_app/README.md) for detailed instructions.
 
 ## ✅ Verification Checklist
 
