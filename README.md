@@ -17,10 +17,13 @@ This repository provides **prebuilt binaries** for DeepX NPU devices on Windows,
 dx_rt_windows/
 └── m1/v3.2.0/
     ├── dxm1drv/           # PCIe driver package (dxm1drv.zip)
-    ├── dx_rt/             # Runtime (bin/, include/, lib/)
+    ├── dx_rt/             # Runtime (bin/, include/, lib/, python/)
     │   ├── bin/           # dxrtd.exe, dxrt-cli.exe, run_model.exe, etc.
     │   ├── include/       # Header files (dxrt/*.h)
-    │   └── lib/           # Libraries and CMake config
+    │   ├── lib/           # Libraries and CMake config
+    │   └── python/        # Python wheel packages and CLI tools
+    │       ├── dx_engine-*.whl  # Python bindings (cp310~cp314)
+    │       └── cli/       # Python CLI scripts
     └── dx_app/            # Demo applications
         ├── setup.bat      # Download models and sample videos
         ├── v3.0.0/        # Recommended menu-based demo app
@@ -128,6 +131,77 @@ This launches an interactive menu-based demo application where you can select va
 | **dxtop.exe** | Real-time NPU monitoring |
 
 Run any tool with `-h` for detailed usage.
+
+---
+
+## 🐍 Python API (`m1/v3.2.0/dx_rt/python/`)
+
+The `dx_engine` Python package provides Python bindings for the DXRT runtime, allowing you to run inference on DeepX NPU devices directly from Python.
+
+### Supported Python Versions
+
+| Python Version | Wheel File |
+|----------------|------------|
+| Python 3.10 | `dx_engine-1.1.4-cp310-cp310-win_amd64.whl` |
+| Python 3.11 | `dx_engine-1.1.4-cp311-cp311-win_amd64.whl` |
+| Python 3.12 | `dx_engine-1.1.4-cp312-cp312-win_amd64.whl` |
+| Python 3.13 | `dx_engine-1.1.4-cp313-cp313-win_amd64.whl` |
+| Python 3.14 | `dx_engine-1.1.4-cp314-cp314-win_amd64.whl` |
+
+### Installation
+
+```cmd
+cd m1\v3.2.0\dx_rt\python
+pip install dx_engine-1.1.4-cp312-cp312-win_amd64.whl
+```
+
+> Replace `cp312` with your Python version (e.g., `cp310` for Python 3.10).
+
+### Python CLI Tools
+
+Python-based command-line tools are available in `python/cli/`:
+
+| Script | Description |
+|--------|-------------|
+| **run_model.py** | Run inference on `.dxnn` models (benchmark, single, target FPS modes) |
+| **parse_model.py** | Inspect and parse model information |
+| **run_model_prof.py** | Run inference with profiling support |
+
+### Usage Examples
+
+**Run Model (Benchmark Mode):**
+```cmd
+cd m1\v3.2.0\dx_rt\python\cli
+python run_model.py -m model.dxnn -l 100
+```
+
+**Run Model (Single Inference):**
+```cmd
+python run_model.py -m model.dxnn -s -v
+```
+
+**Parse Model Information:**
+```cmd
+python parse_model.py -m model.dxnn -v
+```
+
+**run_model.py Options:**
+
+| Option | Description |
+|--------|-------------|
+| `-m, --model` | Model file path (.dxnn) [required] |
+| `-b, --benchmark` | Benchmark mode (maximum throughput, default) |
+| `-s, --single` | Single run mode (sequential single-input inference) |
+| `-v, --verbose` | Show NPU Processing Time and Latency |
+| `-n, --npu` | NPU binding option (0: ALL, 1: NPU_0, 2: NPU_1, etc.) |
+| `-l, --loops` | Number of inference loops (default: 30) |
+| `-w, --warmup-runs` | Number of warmup runs before measurement |
+| `-d, --devices` | Target NPU devices ('all', '0', '0,1,2', 'count:N') |
+| `-f, --fps` | Target FPS for target FPS mode |
+| `--use-ort` | Enable ONNX Runtime for CPU tasks |
+| `--profiler` | Enable profiler |
+
+Run `python run_model.py -h` for full usage details.
 
 ---
 
