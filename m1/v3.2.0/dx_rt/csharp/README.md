@@ -5,7 +5,7 @@ DeepX NPU Runtime C# SDK for .NET 8.0
 ## Directory Structure
 
 ```
-dist/
+csharp/
 ├── lib/                          # DxEngine libraries
 │   ├── DxEngine.dll              # C# managed library
 │   ├── DxEngineNative.dll        # C++/CLI native bridge
