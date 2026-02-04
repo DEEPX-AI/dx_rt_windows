@@ -1,6 +1,6 @@
 {
     "usage": "multi",
-    "model_path": "../assets/models/models-2_2_0/YOLOV5S_3.dxnn",
+    "model_path": "../assets/models/YOLOV5S_3.dxnn",
     "model_name": "yolov5s_512",
     
     "video_sources": [

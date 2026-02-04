@@ -4,7 +4,6 @@ setlocal EnableDelayedExpansion
 REM Get script directory
 set "SCRIPT_DIR=%~dp0"
 set "DX_APP_PATH=%SCRIPT_DIR:~0,-1%"
-set "MODELS_VERSION=models-2_2_0"
 
 pushd "%DX_APP_PATH%"
 
@@ -26,7 +25,7 @@ REM Check if models and videos directories exist
 set "MODELS_OK=0"
 set "VIDEOS_OK=0"
 
-if exist "..\assets\models\%MODELS_VERSION%" set "MODELS_OK=1"
+if exist "..\assets\models" set "MODELS_OK=1"
 if exist "..\assets\videos" set "VIDEOS_OK=1"
 
 if "%MODELS_OK%"=="1" if "%VIDEOS_OK%"=="1" (
@@ -71,62 +70,62 @@ if "%SELECT%"=="" set "SELECT=0"
 REM Execute selected demo
 if "%SELECT%"=="0" (
     echo [INFO] Running YOLOv7 Object Detection...
-    "%DX_APP_PATH%\bin\yolov7_async.exe" -m ..\assets\models\%MODELS_VERSION%\YoloV7.dxnn -v ..\assets\videos\snowboard.mp4
+    "%DX_APP_PATH%\bin\yolov7_async.exe" -m ..\assets\models\YoloV7.dxnn -v ..\assets\videos\snowboard.mp4
     goto :end
 )
 if "%SELECT%"=="1" (
     echo [INFO] Running YOLOv7 PPU Object Detection...
-    "%DX_APP_PATH%\bin\yolov7_ppu_async.exe" -m ..\assets\models\%MODELS_VERSION%\YoloV7_PPU.dxnn -v ..\assets\videos\snowboard.mp4
+    "%DX_APP_PATH%\bin\yolov7_ppu_async.exe" -m ..\assets\models\YoloV7_PPU.dxnn -v ..\assets\videos\snowboard.mp4
     goto :end
 )
 if "%SELECT%"=="2" (
     echo [INFO] Running YOLOv8N Object Detection...
-    "%DX_APP_PATH%\bin\yolov8_async.exe" -m ..\assets\models\%MODELS_VERSION%\YoloV8N.dxnn -v ..\assets\videos\boat.mp4
+    "%DX_APP_PATH%\bin\yolov8_async.exe" -m ..\assets\models\YoloV8N.dxnn -v ..\assets\videos\boat.mp4
     goto :end
 )
 if "%SELECT%"=="3" (
     echo [INFO] Running YOLOv9S Object Detection...
-    "%DX_APP_PATH%\bin\yolov9_async.exe" -m ..\assets\models\%MODELS_VERSION%\YOLOV9S.dxnn -v ..\assets\videos\carrierbag.mp4
+    "%DX_APP_PATH%\bin\yolov9_async.exe" -m ..\assets\models\YOLOV9S.dxnn -v ..\assets\videos\carrierbag.mp4
     goto :end
 )
 if "%SELECT%"=="4" (
     echo [INFO] Running YOLOv5S PPU Object Detection...
-    "%DX_APP_PATH%\bin\yolov5_ppu_async.exe" -m ..\assets\models\%MODELS_VERSION%\YOLOV5S_PPU.dxnn -v ..\assets\videos\boat.mp4
+    "%DX_APP_PATH%\bin\yolov5_ppu_async.exe" -m ..\assets\models\YOLOV5S_PPU.dxnn -v ..\assets\videos\boat.mp4
     goto :end
 )
 if "%SELECT%"=="5" (
     echo [INFO] Running YOLOV5S Face Detection...
-    "%DX_APP_PATH%\bin\yolov5face_async.exe" -m ..\assets\models\%MODELS_VERSION%\YOLOV5S_Face-1.dxnn -v ..\assets\videos\dance-group.mov
+    "%DX_APP_PATH%\bin\yolov5face_async.exe" -m ..\assets\models\YOLOV5S_Face-1.dxnn -v ..\assets\videos\dance-group.mov
     goto :end
 )
 if "%SELECT%"=="6" (
     echo [INFO] Running SCRFD500M PPU Face Detection...
-    "%DX_APP_PATH%\bin\scrfd_ppu_async.exe" -m ..\assets\models\%MODELS_VERSION%\SCRFD500M_PPU.dxnn -v ..\assets\videos\dance-group.mov
+    "%DX_APP_PATH%\bin\scrfd_ppu_async.exe" -m ..\assets\models\SCRFD500M_PPU.dxnn -v ..\assets\videos\dance-group.mov
     goto :end
 )
 if "%SELECT%"=="7" (
     echo [INFO] Running Pose Estimation...
-    "%DX_APP_PATH%\bin\yolov5pose_async.exe" -m ..\assets\models\%MODELS_VERSION%\YOLOV5Pose640_1.dxnn -v ..\assets\videos\dance-solo.mov
+    "%DX_APP_PATH%\bin\yolov5pose_async.exe" -m ..\assets\models\YOLOV5Pose640_1.dxnn -v ..\assets\videos\dance-solo.mov
     goto :end
 )
 if "%SELECT%"=="8" (
     echo [INFO] Running Pose Estimation with PPU...
-    "%DX_APP_PATH%\bin\yolov5pose_ppu_async.exe" -m ..\assets\models\%MODELS_VERSION%\YOLOV5Pose_PPU.dxnn -v ..\assets\videos\dance-solo.mov
+    "%DX_APP_PATH%\bin\yolov5pose_ppu_async.exe" -m ..\assets\models\YOLOV5Pose_PPU.dxnn -v ..\assets\videos\dance-solo.mov
     goto :end
 )
 if "%SELECT%"=="9" (
     echo [INFO] Running Semantic Segmentation...
-    "%DX_APP_PATH%\bin\deeplabv3_async.exe" -m ..\assets\models\%MODELS_VERSION%\DeepLabV3PlusMobileNetV2_2.dxnn -v ..\assets\videos\blackbox-city-road.mp4
+    "%DX_APP_PATH%\bin\deeplabv3_async.exe" -m ..\assets\models\DeepLabV3PlusMobileNetV2_2.dxnn -v ..\assets\videos\blackbox-city-road.mp4
     goto :end
 )
 if "%SELECT%"=="10" (
     echo [INFO] Running Multi-Model Object Detection ^& Segmentation...
-    "%DX_APP_PATH%\bin\yolov7_x_deeplabv3_async.exe" -y ..\assets\models\%MODELS_VERSION%\YoloV7.dxnn -d ..\assets\models\%MODELS_VERSION%\DeepLabV3PlusMobileNetV2_2.dxnn -v ..\assets\videos\blackbox-city-road2.mov
+    "%DX_APP_PATH%\bin\yolov7_x_deeplabv3_async.exe" -y ..\assets\models\YoloV7.dxnn -d ..\assets\models\DeepLabV3PlusMobileNetV2_2.dxnn -v ..\assets\videos\blackbox-city-road2.mov
     goto :end
 )
 if "%SELECT%"=="11" (
     echo [INFO] Running YOLOv26S Object Detection...
-    "%DX_APP_PATH%\bin\yolov26_async.exe" -m ..\assets\models\%MODELS_VERSION%\yolo26s-1.dxnn -v ..\assets\videos\snowboard.mp4
+    "%DX_APP_PATH%\bin\yolov26_async.exe" -m ..\assets\models\yolo26s-1.dxnn -v ..\assets\videos\snowboard.mp4
     goto :end
 )
 

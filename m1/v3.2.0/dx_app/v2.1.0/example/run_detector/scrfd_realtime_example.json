@@ -2,7 +2,7 @@
     "description":"run yolo face detector",
     "usage":"detection",
     "model":{
-        "path":"../assets/models/models-2_2_0/SCRFD500M_1.dxnn",
+        "path":"../assets/models/SCRFD500M_1.dxnn",
         "param":{
             "name":"scrfd",
             "input_width" : 640,

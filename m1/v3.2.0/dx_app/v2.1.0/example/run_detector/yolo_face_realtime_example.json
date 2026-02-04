@@ -2,7 +2,7 @@
     "description":"run yolo face detector",
     "usage":"detection",
     "model":{
-        "path":"../assets/models/models-2_2_0/YOLOV5S_Face-1.dxnn",
+        "path":"../assets/models/YOLOV5S_Face-1.dxnn",
         "param":{
             "name":"yolo_face",
             "input_width" : 640,

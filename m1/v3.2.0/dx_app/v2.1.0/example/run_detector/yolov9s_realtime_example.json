@@ -2,7 +2,7 @@
     "description": "run yolo detector",
     "usage": "detection",
     "model": {
-        "path": "../assets/models/models-2_2_0/YOLOV9S.dxnn",
+        "path": "../assets/models/YOLOV9S.dxnn",
         "param": {
             "name": "YOLOV9S",
             "input_width" : 640,

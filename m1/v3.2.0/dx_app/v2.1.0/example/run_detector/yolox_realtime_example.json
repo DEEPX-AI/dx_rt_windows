@@ -2,7 +2,7 @@
     "description":"run yolo detector",
     "usage":"detection",
     "model":{
-        "path":"../assets/models/models-2_2_0/YOLOX-S_1.dxnn",
+        "path":"../assets/models/YOLOX-S_1.dxnn",
         "param":{
             "name":"yoloxs",
             "input_width" : 512,

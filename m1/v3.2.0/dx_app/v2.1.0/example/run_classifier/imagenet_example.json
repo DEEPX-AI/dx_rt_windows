@@ -2,7 +2,7 @@
     "description": "run classification application ",
     "usage": "classification",
     "model": {
-        "path": "../assets/models/models-2_2_0/EfficientNetB0_4.dxnn",
+        "path": "../assets/models/EfficientNetB0_4.dxnn",
         "input_width" : 224,
         "input_height" : 224,
         "final_outputs":[

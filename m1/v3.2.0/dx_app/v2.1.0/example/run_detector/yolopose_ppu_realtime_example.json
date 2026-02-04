@@ -2,7 +2,7 @@
     "description":"run yolo pose detector",
     "usage":"detection",
     "model":{
-        "path":"../assets/models/models-2_2_0/YOLOV5Pose_PPU.dxnn",
+        "path":"../assets/models/YOLOV5Pose_PPU.dxnn",
         "param":{
             "name":"yolo_pose",
             "input_width" : 640,

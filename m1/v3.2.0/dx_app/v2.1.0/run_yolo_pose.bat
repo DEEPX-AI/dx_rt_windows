@@ -6,8 +6,7 @@ pushd "%~dp0"
 
 set PATH=..\..\dx_rt\bin;%PATH%
 
-set "MODELS_VERSION=models-2_2_0"
-set "APP_MODEL_PATH=..\assets\models\%MODELS_VERSION%\YOLOV5Pose640_1.dxnn"
+set "APP_MODEL_PATH=..\assets\models\YOLOV5Pose640_1.dxnn"
 set "APP_CONFIG_PARAM=0"
 set "APP_VIDEO_PATH=..\assets\videos\dance-group2.mov"
 
